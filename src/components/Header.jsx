@@ -1,18 +1,21 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { searchProduct } from '../redux/slices/productSlice'
 
 const Header = ({insideHome}) => {
+  const dispatch=useDispatch()
   const userWishList=useSelector(state=>state.whishlistReducer)
+  const usewCart=useSelector(state=>state.cartReducer)
   return (
-    <nav className='flex bg-violet-600 fixed w-full p-5 text-white font-bold'>
+    <nav className='fixed flex w-full p-5 font-bold text-white bg-violet-600'>
       <Link to={'/'} className='text-2xl'> 
       <i className="fa-solid fa-truck-fast me-1"></i> Daily Cart
       </Link>
       <ul className='flex-1 text-right'>
-        {insideHome && <li className='list-none inline-block px-5'><input style={{width:'300px'}} type="text" placeholder='Search by product here !' className='rounded p-1' /></li>}
-        <li className='list-none inline-block px-5'><Link to={'/whishlist'}> <i className="fa-solid fa-heart text-red-600"></i>Whislist <span className='bg-black text-white p-1 rounded'>{userWishList?.length}</span></Link></li>
-        <li className='list-none inline-block px-5'><Link to={'/cart'}> <i className="fa-solid fa-cart-plus text-green-600"></i>Cart <span className='bg-black text-white p-1 rounded'>10</span></Link></li>
+        {insideHome && <li className='inline-block px-5 list-none'><input style={{width:'300px'}} type="text" placeholder='Search by product here !' onChange={(e)=>dispatch(searchProduct(e.target.value.toLocaleLowerCase()))} className='p-1 rounded text-black' /></li>}
+        <li className='inline-block px-5 list-none'><Link to={'/whishlist'}> <i className="text-red-600 fa-solid fa-heart"></i>Whislist <span className='p-1 text-white bg-black rounded'>{userWishList?.length}</span></Link></li>
+        <li className='inline-block px-5 list-none'><Link to={'/cart'}> <i className="text-green-600 fa-solid fa-cart-plus"></i>Cart <span className='p-1 text-white bg-black rounded'>{usewCart?.length}</span></Link></li>
       </ul>
     </nav>
   )

@@ -3,9 +3,11 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWhishlist } from "../redux/slices/wishlistSlice";
+import { addToCart } from "../redux/slices/cartSlice";
 
 const View = () => {
   const dispatch=useDispatch()
+  const userCart=useSelector(state=>state.cartReducer)
   const userWishlist=useSelector(state=>state.whishlistReducer)
   const [product,setProduct]=useState({})
   const {id}=useParams()
@@ -28,11 +30,21 @@ const View = () => {
     }
   }
   
+  const handleCart=()=>{
+    dispatch(addToCart(product))
+    const existing=userCart?.find(item=>item?.id==id)
+    if(existing){
+      alert("Product Quantity Increased")
+    }else{
+      alert("Item added  to cart successfully")
+    }
+  }
+  
   return (
     <>
       <Header />
-      <div className="mx-5  flex flex-col pt-5">
-        <div className="grid grid-cols-2 items-center h-screen">
+      <div className="flex flex-col pt-5 mx-5">
+        <div className="grid items-center h-screen grid-cols-2">
           <div>
           <img
             className="ms-40"
@@ -42,28 +54,28 @@ const View = () => {
             alt=""
           />
            <div className="flex justify-between m-5">
-                <button className="bg-blue-600 rounded text-white p-2" onClick={handleWhishlist}>ADD TO WHISHLIST</button>
-                <button className="bg-green-600 rounded text-white p-2">ADD TO CART</button>
+                <button className="p-2 text-white bg-blue-600 rounded" onClick={handleWhishlist}>ADD TO WHISHLIST</button>
+                <button className="p-2 text-white bg-green-600 rounded" onClick={handleCart}>ADD TO CART</button>
             </div>
           </div>
           <div>
             <h3 className="font-bold">PID :{product.id}</h3>
             <h1 className="text-5xl font-bold">{product.title}</h1>
-            <h4 className="font-bold text-2xl text-red-600">{product.title}</h4>
+            <h4 className="text-2xl font-bold text-red-600">{product.title}</h4>
             <h4>Brand :{product.brand}</h4>
             <h4>Category :{product.category}</h4>
             <p>
               <span className="font-bold">Description</span>{product.description}
             </p>
-            <h3 className="font-bold mt-4">Client Reviews</h3>
+            <h3 className="mt-4 font-bold">Client Reviews</h3>
             {
               product?.reviews?.length>0?
               product?.reviews?.map(item=>(
-                <div key={item.date} className="shadow border rounded p-2 mb-2">
+                <div key={item.date} className="p-2 mb-2 border rounded shadow">
                   <h5>
                     <span className="font-bold">{item?.reviewerName}</span> : <span>{item?.comment}</span>
                   </h5>
-                  <p>Rating : {item?.rating} <i className="fa-solid fa-star text-yellow-400"></i> </p>
+                  <p>Rating : {item?.rating} <i className="text-yellow-400 fa-solid fa-star"></i> </p>
                 </div>
                 
               ))
